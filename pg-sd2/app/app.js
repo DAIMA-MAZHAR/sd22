@@ -11,8 +11,71 @@ app.use(express.static("static"));
 const db = require('./services/db');
 
 // Create a route for root - /
+app.get("/all-students", function(req, res) {
+  
+    sql = 'select * from students';
+    db.query(sql).then(results => {
+        console.log(results);
+        res.send(results);
+    });
+});
+// task 2
+app.get("/all-students-formatted", function(req, res) {
+  
+    sql = 'select * from students';
+    var output = '<table border= "1px" >';
+    db.query(sql).then(results => {
+        for (var row of results){
+            output += '<tr>';
+            output += '<td>'+ row.id + '</td>';
+            output += '<td>'+ '<a href ="./single-students/' + row.id + '">'+ row.name + '</a>' + '</td>';
+            output += '</tr>';
+        }
+        output += '</table>';
+        res.send(output);
+    });
+});
+//task 3
+
+app.get("/single-student/:id", function (req, res) {
+    var stId = req.params, id;
+    console. log(stId);
+    var stsql = "SELECT s.name as student, ps.name, as programme, \
+    ps.id as pcode from Students s \
+    JOIN Student Programme sp on sp.id = s.id \
+    JOIN Programmes ps on ps.id = sp.programme \
+    WHERE s.id = ?";
+    var modSql = "SELECT * FROM Programme_Modules pm \
+    JOIN Modules m on m.code = pm.module \
+    WHERE programme = ?";
+    db. query(stSql, [stId]). then(results => {
+    console. log(results);
+    var plode = results [0].pcode;
+    output = '';
+    output += '<div><b>Student: </b>' + results[0].student + '</div>';
+     output += '<div><b> Programme: </b>' + results (e).programme + '</div>';
+    //Now call the database for the modules
+     db. query (modSql, [IpCodel]). then(results => {
+         output += ' <table border="lpx">'
+          for (var row of results) {
+    output += '<tr>';
+    outout += '<td>' + row.module + '</td>';
+    outout += '<td>' + row.name + '</td>';
+    output += '</tr>';
+
+}
+
+  
+    output+= '</table>" ';
+    res.send(output);
+
+});
+});
+});
+
+
 app.get("/", function(req, res) {
-    res.send("Hello world!");
+    res.send("Hello worldCCC!");
 });
 
 // Create a route for testing the db
